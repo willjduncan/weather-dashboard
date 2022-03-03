@@ -1,14 +1,12 @@
 var weekListEl = document.querySelector(".week-list");
 var cityListEl = document.querySelector(".city-list");
 var todayEl = document.querySelector(".today");
+const apiKey = "0e7adf6707c7fbd3dedaeb804daa8ef2"
 
 // var getCityCds = function(city)
 var getCityCds = function(city) {
-    
+    var cityConvertUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
 
-    var cityConvertUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=0e7adf6707c7fbd3dedaeb804daa8ef2"
-
-  
     // make a request to the url
     fetch(cityConvertUrl)
     .then(function(response) {
@@ -20,6 +18,7 @@ var getCityCds = function(city) {
           console.log(data[0].lat);
           var lon = data[0].lon;
           var lat = data[0].lat;
+          getCityWeather(lon, lat);
         });
       } else {
         alert('Error: City Not Found');
@@ -28,11 +27,29 @@ var getCityCds = function(city) {
     .catch(function(error) {
       alert("Unable to connect to Weather API");
     });
-    getCityWeather(lon, lat);
 };
 
 var getCityWeather = function(lon, lat) {
 
+    var weatherUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" 
+    + lon + "&appid=" + apiKey;
+
+    // make a request to the url
+    fetch(weatherUrl)
+    .then(function(response) {
+        // request was successful
+        if (response.ok) {
+        response.json().then(function(data) {
+            console.log(data);
+        });
+        } else {
+        alert('Error: City Not Found');
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect to Weather API");
+    });
+    // displayCityWeather();
 }
 
 
