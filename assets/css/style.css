@@ -1,0 +1,8 @@
+.bg-blue {
+    /* background-color: #480355; */
+    background-image: linear-gradient(to right, #2892D7, #480355);
+    /* background-image: linear-gradient(to right, red , yellow); */
+    /* transition: all .5s ease-out; */
+    /* background-size: 1px 100px; */
+    /* background-position: 0 -10px; */
+}
