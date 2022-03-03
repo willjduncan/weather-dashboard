@@ -1,6 +1,9 @@
 var weekListEl = document.querySelector(".week-list");
 var cityListEl = document.querySelector(".city-list");
 var todayEl = document.querySelector(".today");
+var todayInfoEl = document.querySelector(".today-info");
+var searchBtnEl = document.querySelector("#search");
+var nameInputEl = document.querySelector("#city");
 const apiKey = "0e7adf6707c7fbd3dedaeb804daa8ef2"
 
 // var getCityCds = function(city)
@@ -18,6 +21,11 @@ var getCityCds = function(city) {
           console.log(data[0].lat);
           var lon = data[0].lon;
           var lat = data[0].lat;
+          var todayTitleEl = document.createElement("h2");
+          var date =" (" + moment().format('L') + ")";
+          todayTitleEl.append(city, date);
+          todayTitleEl.setAttribute("class", "font-weight-bold");
+          todayEl.append(todayTitleEl);
           getCityWeather(lon, lat);
         });
       } else {
@@ -31,8 +39,13 @@ var getCityCds = function(city) {
 
 var getCityWeather = function(lon, lat) {
 
+    //create weather URL, using the longitude and latitude fetched previously
+    //Query parameters include: 
+    //remove hourly and minutely info, since it's not needed
+    //change units to imperial, for Fahrenheit, wind speed, and the like
+    //API key, since it's necessary
     var weatherUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" 
-    + lon + "&appid=" + apiKey;
+    + lon + "&exclude=hourly,minutely&units=imperial&appid=" + apiKey;
 
     // make a request to the url
     fetch(weatherUrl)
@@ -41,6 +54,7 @@ var getCityWeather = function(lon, lat) {
         if (response.ok) {
         response.json().then(function(data) {
             console.log(data);
+            displayCityWeather(data);
         });
         } else {
         alert('Error: City Not Found');
@@ -49,85 +63,90 @@ var getCityWeather = function(lon, lat) {
     .catch(function(error) {
         alert("Unable to connect to Weather API");
     });
-    // displayCityWeather();
 }
 
+var displayCityWeather = function(data) {
+    //Add icon to go along with the City Name and Date
+    //Find icon code
+    var imageCode = data.current.weather[0].icon;
+    //add code to the url that will source the image
+    var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
+    //create an image element and add the url as the source
+    var imageEl = document.createElement("img");
+    imageEl.setAttribute("src", iconUrl);
+    todayEl.append(imageEl);
+    //show temp
+    var todayTemp = data.current.temp
+    var todayTempEl=document.createElement("p");
+    todayTempEl.textContent = "Temp: " + todayTemp + "°F";
+    todayInfoEl.append(todayTempEl);
+    //show wind
+    var todayWind = data.current.wind_speed
+    var todayWindEl=document.createElement("p");
+    todayWindEl.textContent = "Wind: " + todayWind + " MPH";
+    todayInfoEl.append(todayWindEl);
+    //show humidity
+    var todayHumid = data.current.humidity
+    var todayHumidEl=document.createElement("p");
+    todayHumidEl.textContent = "Humidity: " + todayHumid + " %";
+    todayInfoEl.append(todayHumidEl);
+    //show UV index
+    var todayUV = data.current.uvi
+    var todayUVEl=document.createElement("p");
+    todayUVEl.textContent = "UV Index: " + todayUV;
+    todayInfoEl.append(todayUVEl);
 
+    //FOR 5 DAY FORECAST
+    for (i=0; i<5; i++) {
+        //create a card
+        var forecastEl = document.createElement("div");
+        forecastEl.setAttribute("class", "card card-style col m-2");
+        //show date
+        var futureDate = moment().add((i+1), 'days').format("L");
+        forecastEl.append(futureDate); 
+     
+        //show icon
+        var imageCode = data.daily[i].weather[0].icon;
+        //add code to the url that will source the image
+        var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
+        //create an image element and add the url as the source
+        var imageEl = document.createElement("img");
+        imageEl.setAttribute("src", iconUrl);
+        forecastEl.append(imageEl);
+        
+        //show temp
+        var dayTemp = data.daily[i].temp.day;
+        var dayTempEl=document.createElement("p");
+        dayTempEl.textContent = "Temp: " + dayTemp + "°F";
+        forecastEl.append(dayTempEl);
+        //show wind
+        var dayWind = data.daily[i].wind_speed
+        var dayWindEl=document.createElement("p");
+        dayWindEl.textContent = "Wind: " + dayWind + " MPH";
+        forecastEl.append(dayWindEl);
+        //show humidity
+        var dayHumid = data.daily[i].humidity
+        var dayHumidEl=document.createElement("p");
+        dayHumidEl.textContent = "Humidity: " + dayHumid + " %";
+        forecastEl.append(dayHumidEl);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        weekListEl.append(forecastEl);
+    }
+}
 
 var formSubmitHandler = function(event) {
     event.preventDefault();
     // get value from input element
-    var username = nameInputEl.value.trim();
-
-    if (username) {
-    getUserRepos(username);
+    var submission = nameInputEl.value.trim();
+   
+    if (submission) {
+    getCityCds(submission);
     nameInputEl.value = "";
     } else {
-    alert("Please enter a GitHub username");
+    alert("Please enter a city.");
     }
-    console.log(event);
 };
 
-var displayRepos = function(repos, searchTerm) {
-    // clear old content
-    repoContainerEl.textContent = "";
-    repoSearchTerm.textContent = searchTerm;
 
-    // check if api returned any repos
-    if (repos.length === 0) {
-        repoContainerEl.textContent = "No repositories found.";
-        return;
-    }
-    // loop over repos
-    for (var i = 0; i < repos.length; i++) {
-        // format repo name
-        var repoName = repos[i].owner.login + "/" + repos[i].name;
-    
-        // create a container for each repo
-        var repoEl = document.createElement("a");
-        repoEl.classList = "list-item flex-row justify-space-between align-center";
-        repoEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
-    
-        // create a span element to hold repository name
-        var titleEl = document.createElement("span");
-        titleEl.textContent = repoName;
-
-        // append to container
-        repoEl.appendChild(titleEl);
-
-        // create a status element
-        var statusEl = document.createElement("span");
-        statusEl.classList = "flex-row align-center";
-
-        // check if current repo has issues or not
-        if (repos[i].open_issues_count > 0) {
-        statusEl.innerHTML =
-            "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
-        } else {
-        statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-        }
-
-        // append to container
-        repoEl.appendChild(statusEl);
-    
-        // append container to the dom
-        repoContainerEl.appendChild(repoEl);
-    }
-  
-};
-
-getCityCds("Charlotte");
+searchBtnEl.addEventListener("click", formSubmitHandler);
+// getCityCds("Charlotte");

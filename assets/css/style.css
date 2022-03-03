@@ -8,6 +8,10 @@
     background-color: #2892D7;
     color: white;
 }
-.today {
+.today-style {
     border: 1px solid black;
+}
+.card-style {
+    background-color: #001242;
+    color: white;
 }
