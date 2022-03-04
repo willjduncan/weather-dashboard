@@ -15,3 +15,9 @@
     background-color: #001242;
     color: white;
 }
+.btn-gray {
+ background-color: gray;
+}
+.city-list {
+    padding-left: 0;
+}

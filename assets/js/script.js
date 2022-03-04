@@ -4,11 +4,16 @@ var todayEl = document.querySelector(".today");
 var todayInfoEl = document.querySelector(".today-info");
 var searchBtnEl = document.querySelector("#search");
 var nameInputEl = document.querySelector("#city");
+var weekForecastEl = document.querySelector("#week-forecast");
 const apiKey = "0e7adf6707c7fbd3dedaeb804daa8ef2"
 
 // var getCityCds = function(city)
 var getCityCds = function(city) {
     var cityConvertUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
+
+    while (todayEl.firstChild) {
+        todayEl.removeChild(todayEl.firstChild);
+    }
 
     // make a request to the url
     fetch(cityConvertUrl)
@@ -26,6 +31,7 @@ var getCityCds = function(city) {
           todayTitleEl.append(city, date);
           todayTitleEl.setAttribute("class", "font-weight-bold");
           todayEl.append(todayTitleEl);
+          makeButton(city);
           getCityWeather(lon, lat);
         });
       } else {
@@ -68,6 +74,9 @@ var getCityWeather = function(lon, lat) {
 var displayCityWeather = function(data) {
     //Add icon to go along with the City Name and Date
     //Find icon code
+    while (todayInfoEl.firstChild) {
+        todayInfoEl.removeChild(todayInfoEl.firstChild);
+    }
     var imageCode = data.current.weather[0].icon;
     //add code to the url that will source the image
     var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
@@ -96,11 +105,19 @@ var displayCityWeather = function(data) {
     todayUVEl.textContent = "UV Index: " + todayUV;
     todayInfoEl.append(todayUVEl);
 
+    if (!weekForecastEl.textContent) {
+        weekForecastEl.textContent = "5-Day Forecast";
+    }
+
+    while (weekListEl.firstChild) {
+        weekListEl.removeChild(weekListEl.firstChild);
+    }
+
     //FOR 5 DAY FORECAST
     for (i=0; i<5; i++) {
         //create a card
         var forecastEl = document.createElement("div");
-        forecastEl.setAttribute("class", "card card-style col m-2");
+        $(forecastEl).addClass("card card-style col m-2");
         //show date
         var futureDate = moment().add((i+1), 'days').format("L");
         forecastEl.append(futureDate); 
@@ -147,6 +164,18 @@ var formSubmitHandler = function(event) {
     }
 };
 
+var replaceContentHandler = function(event) {
+    console.log("go");
+}
+
+var makeButton = function(city) {
+    var cityBtn = document.createElement("button");
+    $(cityBtn).addClass("btn btn-gray w-100 mt-2 mb-4");
+    cityBtn.textContent = city;
+    cityListEl.append(cityBtn);
+}
+
 
 searchBtnEl.addEventListener("click", formSubmitHandler);
+cityListEl.addEventListener("click", replaceContentHandler);
 // getCityCds("Charlotte");
