@@ -49,7 +49,7 @@ Now, when the user goes on, they can look up any city and return to it whenever 
 
 ## Installation
 
-My repository on GitHub is named Work-Scheduler. The link to this repository is below.
+My repository on GitHub is named weather-dashboard. The link to this repository is below.
 
 [https://github.com/willjduncan/weather-dashboard.git](https://github.com/willjduncan/weather-dashboard.git)
 
