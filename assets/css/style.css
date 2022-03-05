@@ -21,3 +21,13 @@
 .city-list {
     padding-left: 0;
 }
+.hi-uv {
+    background-color: red;
+    color: white;
+}
+.mid-uv {
+    background-color: yellow;
+}
+.low-uv {
+    background-color: rgb(22, 177, 22);
+}

@@ -7,10 +7,11 @@ var nameInputEl = document.querySelector("#city");
 var weekForecastEl = document.querySelector("#week-forecast");
 const apiKey = "0e7adf6707c7fbd3dedaeb804daa8ef2"
 
-// var getCityCds = function(city)
+//Get CITY COORDINATES
 var getCityCds = function(city) {
     var cityConvertUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
 
+    //Remove anything that may already cover the title of today's weather
     while (todayEl.firstChild) {
         todayEl.removeChild(todayEl.firstChild);
     }
@@ -21,17 +22,18 @@ var getCityCds = function(city) {
       // request was successful
       if (response.ok) {
         response.json().then(function(data) {
-          console.log(data);
-          console.log(data[0].lon);
-          console.log(data[0].lat);
+          //fetch longitude and latitude values
           var lon = data[0].lon;
           var lat = data[0].lat;
+          //Update today's weather with the name of the city and the date
           var todayTitleEl = document.createElement("h2");
           var date =" (" + moment().format('L') + ")";
           todayTitleEl.append(city, date);
           todayTitleEl.setAttribute("class", "font-weight-bold");
           todayEl.append(todayTitleEl);
+          //make a button for the searched city
           makeButton(city);
+          //fetch the weather data
           getCityWeather(lon, lat);
         });
       } else {
@@ -43,6 +45,7 @@ var getCityCds = function(city) {
     });
 };
 
+//GET CITY'S WEATHER DATA
 var getCityWeather = function(lon, lat) {
 
     //create weather URL, using the longitude and latitude fetched previously
@@ -59,7 +62,13 @@ var getCityWeather = function(lon, lat) {
         // request was successful
         if (response.ok) {
         response.json().then(function(data) {
-            console.log(data);
+            //Fetch the city's name from the title, and store it as the key in localStorage
+            var cityName = $(todayEl).find("h2")[0].innerHTML;
+            cityName = cityName.split("(")[0];
+            cityName = cityName.trim();
+            localStorage.setItem(cityName, JSON.stringify(data));
+
+            //Display the retrieved data
             displayCityWeather(data);
         });
         } else {
@@ -71,12 +80,14 @@ var getCityWeather = function(lon, lat) {
     });
 }
 
+//DISPLAY CITY'S WEATHER DATA
 var displayCityWeather = function(data) {
     //Add icon to go along with the City Name and Date
-    //Find icon code
+    //Remove anything that may already cover today's weather information
     while (todayInfoEl.firstChild) {
         todayInfoEl.removeChild(todayInfoEl.firstChild);
     }
+    //Find icon code
     var imageCode = data.current.weather[0].icon;
     //add code to the url that will source the image
     var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
@@ -102,13 +113,24 @@ var displayCityWeather = function(data) {
     //show UV index
     var todayUV = data.current.uvi
     var todayUVEl=document.createElement("p");
-    todayUVEl.textContent = "UV Index: " + todayUV;
+    var uvValue = document.createElement("span")
+    uvValue.textContent = todayUV;
+    //Highlight the cover based on its uv index. Google states that mid UV levels are between 3 and 5
+    if (todayUV < 3) {
+        uvValue.setAttribute("class", "low-uv p-1");
+    } else if (todayUV > 5) {
+        uvValue.setAttribute("class", "hi-uv p-1");
+    } else {
+        uvValue.setAttribute("class", "mid-uv p-1"); 
+    }
+    todayUVEl.textContent = "UV Index: ";
+    todayUVEl.append(uvValue);
     todayInfoEl.append(todayUVEl);
-
+    //Add the Title for the 5 day forecast if it's not there already
     if (!weekForecastEl.textContent) {
         weekForecastEl.textContent = "5-Day Forecast";
     }
-
+    //Remove anything that may already cover the upcoming week's weather information
     while (weekListEl.firstChild) {
         weekListEl.removeChild(weekListEl.firstChild);
     }
@@ -146,16 +168,17 @@ var displayCityWeather = function(data) {
         var dayHumidEl=document.createElement("p");
         dayHumidEl.textContent = "Humidity: " + dayHumid + " %";
         forecastEl.append(dayHumidEl);
-
+        //Append the info 
         weekListEl.append(forecastEl);
     }
 }
 
+//TO HANDLE THE CITY SUBMISSION BUTTON
 var formSubmitHandler = function(event) {
     event.preventDefault();
     // get value from input element
     var submission = nameInputEl.value.trim();
-   
+   //If the user wrote a city, empty the input section and get the city's coordinates
     if (submission) {
     getCityCds(submission);
     nameInputEl.value = "";
@@ -164,13 +187,33 @@ var formSubmitHandler = function(event) {
     }
 };
 
+//TO HANDLE SAVED CITY BUTTONS
 var replaceContentHandler = function(event) {
-    console.log("go");
+    //Get the name of the city, and use it as the key to retrieved the locally saved data
+    var cityKey = event.target.innerHTML;
+    console.log(cityKey);
+    var data= JSON.parse(localStorage.getItem(cityKey));
+
+    //Remove old title and icon
+    while (todayEl.firstChild) {
+        todayEl.removeChild(todayEl.firstChild);
+    }
+    
+    // Tag the date and saved city to the top of the "current" section 
+    var todayTitleEl = document.createElement("h2");
+    var date =" (" + moment().format('L') + ")";
+    todayTitleEl.append(cityKey, date);
+    todayTitleEl.setAttribute("class", "font-weight-bold");
+    todayEl.append(todayTitleEl);
+
+    //using the data saved in localStorage, display the weather again for that city
+    displayCityWeather(data);
 }
 
+//Make a button with the city's name as its title
 var makeButton = function(city) {
     var cityBtn = document.createElement("button");
-    $(cityBtn).addClass("btn btn-gray w-100 mt-2 mb-4");
+    $(cityBtn).addClass("btn btn-gray w-100 mt-2");
     cityBtn.textContent = city;
     cityListEl.append(cityBtn);
 }
@@ -178,4 +221,3 @@ var makeButton = function(city) {
 
 searchBtnEl.addEventListener("click", formSubmitHandler);
 cityListEl.addEventListener("click", replaceContentHandler);
-// getCityCds("Charlotte");

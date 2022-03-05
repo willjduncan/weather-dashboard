@@ -4,33 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-  />
-  <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Weather Dashboard</title>
 </head>
 <body>
+    <!-- TOP BANNER -->
     <header class="nav bg-blue d-flex justify-content-center p-2">
         <h1 class="text-white">Weather Dashboard</h1>
     </header>
-
+<!-- CONTAINER -->
    <div class="container">
        <div class="row">
+           <!-- LEFT COLUMN -->
            <div class="col-3">
+               <!-- CITY SEARCH SECTION -->
                <div class="form b-bot">
                     <h2 class="font-weight-bold w-100 mt-2">Search for a City:</h2>
                     <input name="city" id="city" type="text" autofocus="true" class="form-input w-100 p-1 mt-2" placeholder="San Diego"/>
                     <button type="submit" class="btn w-100 btn-style mt-2 mb-4" id="search">Search</button>
                 </div>
+                <!-- CITY LIST SECTION -->
                 <ul class="city-list mt-2"></ul>
            </div>
+           <!-- RIGHT COLUMN -->
            <div class ="col-9 mt-2">
+               <!-- TODAY'S WEATHER -->
                <div class="today-style">
                     <div class="today d-flex flex-wrap"></div>
                     <div class="today-info"></div>
                 </div>
+                <!-- WEEKLY FORECAST -->
                 <div class="week">
                     <h3 id="week-forecast" class="w-100 m-2 font-weight-bold"></h3>
                     <div class ="row">
@@ -40,7 +44,7 @@
            </div>
        </div>
    </div>
-
+<!-- SCRIPTS -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
