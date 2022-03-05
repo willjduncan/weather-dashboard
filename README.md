@@ -47,16 +47,16 @@ Lastly, I had to find a way to both save and re-display city information. I puzz
 
 Now, when the user goes on, they can look up any city and return to it whenever they so choose. 
 
-<!-- ## Installation
+## Installation
 
 My repository on GitHub is named Work-Scheduler. The link to this repository is below.
 
-[git@github.com:willjduncan/Work-Scheduler.git](git@github.com:willjduncan/Work-Scheduler.git)
+[https://github.com/willjduncan/weather-dashboard.git](https://github.com/willjduncan/weather-dashboard.git)
 
 
 The link to the live website is below: 
 
-[hhttps://willjduncan.github.io/Work-Scheduler/](https://willjduncan.github.io/Work-Scheduler/) -->
+[https://willjduncan.github.io/weather-dashboard/](https://willjduncan.github.io/weather-dashboard/)
 
 
 ## Usage
