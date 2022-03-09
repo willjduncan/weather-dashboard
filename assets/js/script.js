@@ -9,7 +9,7 @@ const apiKey = "0e7adf6707c7fbd3dedaeb804daa8ef2"
 
 //Get CITY COORDINATES
 var getCityCds = function(city) {
-    var cityConvertUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
+    var cityConvertUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
 
     //Remove anything that may already cover the title of today's weather
     while (todayEl.firstChild) {
@@ -90,7 +90,7 @@ var displayCityWeather = function(data) {
     //Find icon code
     var imageCode = data.current.weather[0].icon;
     //add code to the url that will source the image
-    var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
+    var iconUrl = "https://openweathermap.org/img/w/" + imageCode + ".png";
     //create an image element and add the url as the source
     var imageEl = document.createElement("img");
     imageEl.setAttribute("src", iconUrl);
@@ -147,7 +147,7 @@ var displayCityWeather = function(data) {
         //show icon
         var imageCode = data.daily[i].weather[0].icon;
         //add code to the url that will source the image
-        var iconUrl = "http://openweathermap.org/img/w/" + imageCode + ".png";
+        var iconUrl = "https://openweathermap.org/img/w/" + imageCode + ".png";
         //create an image element and add the url as the source
         var imageEl = document.createElement("img");
         imageEl.setAttribute("src", iconUrl);
